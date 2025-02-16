@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 const dotenv = require('dotenv');
 dotenv.config();
-
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.MONGO_URI;
 
@@ -38,7 +38,14 @@ async function run() {
       const result = await flashcard.insertOne(cardData);
       res.send(result);
     });
+//jwt 
+app.post('/jwt',async(req,res)=>{
 
+  const useremail=req.body
+  console.log(useremail)
+  const token=jwt.sign(useremail, process.env.ACESS_TOKEN_SECRET, { expiresIn: '365d' });
+  res.send({ token });
+})
     //  Get all flashcards
     app.get("/flashcards", async (req, res) => {
       const today = new Date();
